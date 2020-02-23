@@ -10,7 +10,7 @@ namespace StudentManagement.Web.Data {
         public DbSet<InhouseStudent> Students { get; set; }
         public DbSet<InhouseCourse> Courses { get; set; }
 
-        public InhouseContext(DbContextOptions options): base(options) {
+        public InhouseContext(DbContextOptions<InhouseContext> options): base(options) {
 
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +30,7 @@ namespace StudentManagement.Web {
             var connectionString = Configuration.GetConnectionString("InhouseDB");
             services.AddControllersWithViews();
             services.AddDbContext<InhouseContext>(option => option.UseSqlServer(connectionString));
-            //services.AddJsonOptions(options =>
+            ////services.AddJsonOptions(options =>
             // {
             //     options.SerializerSettings.ContractResolver
             //     = new CamelCasePropertyNamesContractResolver();
@@ -50,6 +51,9 @@ namespace StudentManagement.Web {
                //Custom Health Checkup 
                // .AddCheck("File Path Health Check", new FilePathWriteHealthCheck(logFilePath), HealthStatus.Unhealthy, tags: new[] { "ready" });
                .AddFilePathWrite(logFilePath, HealthStatus.Unhealthy, tags: new[] { "ready" });
+
+            // Use Health Check UI
+            services.AddHealthChecksUI();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,7 +94,15 @@ namespace StudentManagement.Web {
                     ResponseWriter = WriteHealthCheckLiveResponse,
                     AllowCachingResponses = false
                 });
+
+                endpoints.MapHealthChecks("/healthui", new HealthCheckOptions {
+                    Predicate= _ =>true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
+
+            // Needs to add addition settings to configure the path in AppSettings
+            app.UseHealthChecksUI();
         }
 
         private Task WriteHealthCheckLiveResponse(HttpContext httpContext, HealthReport result) {
