@@ -1,0 +1,29 @@
+﻿@model IEnumerable<StudentManagement.Core.Model.Student>
+@{
+    ViewData["Title"] = "Home Page";
+}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Student Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StudentId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
